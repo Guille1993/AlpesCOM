@@ -1,0 +1,98 @@
+CREATE DATABASE alpescom;
+CREATE TABLE usuario(
+	id_usuario	serial	NOT NULL,
+	nombre 		varchar	NOT NULL,
+	apellido	varchar	NOT NULL,
+	fecha_nac	date	NOT NULL,
+	ci		int	NOT NULL,
+	direccion	varchar	NOT NULL,
+	telefono	int	NOT NULL,
+	email		varchar	NOT NULL,
+	PRIMARY KEY (id_usuario)
+);
+CREATE TABLE cliente(
+	id_cliente	serial	NOT NULL,
+	nombre 		varchar	NOT NULL,
+	apellido	varchar	NOT NULL,
+	fecha_nac	date	NOT NULL,
+	ci		int	NOT NULL,
+	direccion	varchar	NOT NULL,
+	telefono	int	NOT NULL,
+	email		varchar	NOT NULL,
+	PRIMARY KEY (id_cliente)
+);
+CREATE TABLE cuadrilla(
+	id_cuadrilla	int	NOT NULL,
+	descripcion	varchar	NOT NULL,
+	PRIMARY KEY (id_cuadrilla)
+);
+CREATE TABLE empleado(
+	id_empleado	serial	NOT NULL,
+	id_cuadrilla	int	NOT NULL,
+	nombre 		varchar	NOT NULL,
+	apellido	varchar	NOT NULL,
+	fecha_nac	date	NOT NULL,
+	ci		int	NOT NULL,
+	direccion	varchar	NOT NULL,
+	telefono	int	NOT NULL,
+	email		varchar	NOT NULL,
+	PRIMARY KEY (id_empleado),
+	FOREIGN KEY (id_cuadrilla) references cuadrilla(id_cuadrilla)
+);
+CREATE TABLE combo_cab(
+	id_combo	serial	NOT NULL,
+	descripcion	varchar	NOT NULL,
+	PRIMARY KEY (id_combo)
+);
+CREATE TABLE producto(
+	id_producto	serial	NOT NULL,
+	descripcion	varchar	NOT NULL,
+	precio		int	NOT NULL,
+	cod_instalacion	int	NOT NULL,
+	cod_activacion	int	NOT NULL,
+	PRIMARY KEY (id_producto),
+	FOREIGN KEY (cod_instalacion) references instalacion(cod_instalacion),
+	FOREIGN KEY (cod_activacion) references activacion(cod_activacion)
+);
+CREATE TABLE combo_det(
+	id_combo	int	NOT NULL,
+        id_producto	int	NOT NULL,
+	PRIMARY KEY (id_combo, id_producto),
+	FOREIGN KEY(id_combo) references combo_cab(id_combo),
+	FOREIGN KEY(id_producto) references producto(id_producto)
+);
+CREATE TABLE solicitud(
+	num_solicitud		serial	NOT NULL,
+	id_cliente		int	NOT NULL,
+	id_combo		int	NOT NULL,
+	PRIMARY KEY (num_solicitud),
+	FOREIGN KEY (id_cliente) references cliente(id_cliente),
+	FOREIGN KEY (id_combo) references combo_cab(id_combo)
+);
+CREATE TABLE estado(
+	id_estado	int	NOT NULL,
+	descripcion	varchar	NOT NULL,
+	PRIMARY KEY (id_estado)
+);
+CREATE TABLE instalacion(
+	cod_instalacion		serial	NOT NULL,
+	num_solicitud		int	NOT NULL,
+	fecha_hora		date	NOT NULL,
+	id_estado		int	NOT NULL,
+	id_cuadrilla		int	NOT NULL,
+	PRIMARY KEY (cod_instalacion),
+	FOREIGN KEY (id_estado) references estado(id_estado),
+	FOREIGN KEY (id_cuadrilla) references cuadrilla(id_cuadrilla),
+	FOREIGN KEY (num_solicitud) references solicitud(num_solicitud)
+);
+CREATE TABLE activacion(
+	cod_activacion		serial	NOT NULL,
+	num_solicitud		int	NOT NULL,
+	fecha_hora		date	NOT NULL,
+	id_estado		int	NOT NULL,
+	id_cuadrilla		int	NOT NULL,
+	PRIMARY KEY (cod_activacion),
+	FOREIGN KEY (id_estado) references estado(id_estado),
+	FOREIGN KEY (id_cuadrilla) references cuadrilla(id_cuadrilla),
+	FOREIGN KEY (num_solicitud) references solicitud(num_solicitud)
+);
